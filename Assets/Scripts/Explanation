@@ -1,0 +1,47 @@
+## Layer 4: System Execution Order — The Full Picture
+```
+SimulationSystemGroup (each frame, in order):
+│
+├── SpawnerSystem          → Instantiates enemy prefabs, sets MoveTarget
+├── EnemyMovementSystem    → Moves all enemies toward Command Building (parallel job)
+├── TargetingSystem        → Writes TargetComponent on each turret base
+├── TurretRotationSystem   → Reads TargetComponent, rotates mount (parallel job)
+├── TurretFireSystem       → (you build next) Reads TargetComponent, fires projectiles
+└── HealthSystem           → Destroys dead entities via ECB
+
+The [UpdateAfter] attributes enforce this order without a brittle central coordinator.
+
+Layer 5: Extensibility — How to Add Features Without Rewrites
+Feature                     What you add                                        What you touch      
+Energy Consumption          EnergyConsumerComponent, EnergyGridSystem           Nothing — just query turrets that 
+                                                                                have the new component
+
+Pathfinding around walls    PathfindingComponent + waypoint DynamicBufferOnly   MoveTargetComponent.Value lookup 
+                                                                                in EnemyMovementSystem
+
+Enemy types (fast, armored) New tag (ArmoredEnemyTag) + override components     Add a filter in TargetingSystem to 
+                                                                                prioritize armored targets
+
+Turret upgrades             TurretTierComponent + upgrade system                TurretWeaponComponent.Damage/Range 
+                                                                                are already data-driven
+
+Spatial partitioning        Replace inner loop in TargetingSystem               Only TargetingSystem internals — 
+                                                                                TargetComponent interface unchanged
+
+Area damage                 SplashDamageComponent on projectile prefabNew       SplashDamageSystem — zero changes to 
+                                                                                turret or enemy systems
+
+Key Architecture Principles at Work
+    1.  Components are nouns, Systems are verbs. HealthComponent holds data. 
+        HealthSystem acts on it. They never cross.
+    2.  [UpdateAfter] instead of Update() ordering. Unity guarantees the dependency graph — 
+        you never fight frame-order bugs.
+    3.  EntityCommandBuffer for all structural changes. You never add/remove components or 
+        destroy entities inside a job. ECBs batch those operations safely.
+    4.  ComponentLookup for cross-entity reads. When a Mount needs to know its Base's target, 
+        it doesn't iterate — it does an O(1) lookup by entity handle.
+    5.  Prefab-based spawning. Instantiate(prefab) in ECS copies all baked components atomically. 
+        No manual component assignment at runtime.
+
+
+This gives you a foundation where adding a 6th system doesn't break the first five, and profiling one system doesn't require understanding all others.

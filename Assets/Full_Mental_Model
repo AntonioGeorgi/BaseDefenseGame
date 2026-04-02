@@ -1,0 +1,26 @@
+### The Full Mental Model
+
+Here's how all the pieces connect:
+```
+Unity Editor (what you see)
+│
+├── Normal Scene
+│   ├── Main Camera          ← regular GameObject, stays as-is
+│   └── Directional Light    ← regular GameObject, stays as-is
+│
+└── Sub-Scene "GameWorld"    ← gets BAKED into entities at runtime
+    ├── CommandBuilding      → bakes into Entity with CommandBuildingTag + HealthComponent
+    ├── Spawner_North        → bakes into Entity with SpawnerComponent
+    └── (enemies are         → created at runtime by SpawnerSystem from the prefab)
+        spawned at runtime)
+
+Runtime (what actually runs)
+│
+├── EntityManager            ← owns all entities, like a giant flat database
+├── World                    ← container for EntityManager + all systems
+└── Systems (auto-discovered, run in order):
+    ├── SpawnerSystem        ← creates enemy entities from pool/prefab
+    ├── EnemyMovementSystem  ← moves them (Burst parallel job)
+    ├── TargetingSystem      ← finds closest enemy per turret
+    ├── TurretRotationSystem ← rotates mounts
+    └── HealthSystem         ← pools dead enemies, destroys dead turrets
