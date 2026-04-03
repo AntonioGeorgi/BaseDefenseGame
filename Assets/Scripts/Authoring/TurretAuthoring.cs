@@ -10,8 +10,12 @@ public class TurretAuthoring : MonoBehaviour
     public float Range       = 15f;
     public float FireRate    = 1.5f;
     public float Damage      = 25f;
+    [Header("Mount Rotation")]
+    [Tooltip("Degrees per second the mount rotates toward its target")]
+    public float MountRotationSpeed = 120f;
     public float ProjectileSpeed = 20f;
     public GameObject ProjectilePrefab;
+
 
     class Baker : Baker<TurretAuthoring>
     {
@@ -27,11 +31,12 @@ public class TurretAuthoring : MonoBehaviour
             AddComponent(baseEntity, new TargetComponent());
             AddComponent(baseEntity, new TurretWeaponComponent
             {
-                Range           = authoring.Range,
-                FireRate        = authoring.FireRate,
-                Damage          = authoring.Damage,
-                ProjectileSpeed = authoring.ProjectileSpeed,
-                ProjectilePrefab = GetEntity(authoring.ProjectilePrefab, TransformUsageFlags.Dynamic)
+                Range               = authoring.Range,
+                FireRate            = authoring.FireRate,
+                Damage              = authoring.Damage,
+                MountRotationSpeed  = authoring.MountRotationSpeed,
+                ProjectileSpeed     = authoring.ProjectileSpeed,
+                ProjectilePrefab    = GetEntity(authoring.ProjectilePrefab, TransformUsageFlags.Dynamic)
             });
             AddComponent(baseEntity, new TurretPartComponent { BaseEntity = baseEntity, MountEntity = mountEntity });
 
@@ -42,7 +47,7 @@ public class TurretAuthoring : MonoBehaviour
             // ── Barrel ──
             AddComponent(barrelEntity, new TurretBarrelTag());
             AddComponent(barrelEntity, new TurretPartComponent { BaseEntity = baseEntity, MountEntity = mountEntity });
-
+            
             // LinkedEntityGroup tells ECB.DestroyEntity to also destroy all children
             // Unity sets this up automatically if you use GetEntity on child GameObjects
             // but we make it explicit for safety:

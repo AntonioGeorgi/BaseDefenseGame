@@ -64,6 +64,7 @@ public struct TurretWeaponComponent : IComponentData
     public float FireRate;         // shots per second
     public float Damage;
     public float ProjectileSpeed;
+    public float  MountRotationSpeed;   // degrees per second
     public float TimeSinceLastShot; // internal timer, mutated by FireSystem
     public Entity ProjectilePrefab; // set via authoring
 }
@@ -102,10 +103,6 @@ public struct SpawnerComponent : IComponentData
     public float  SpawnRate;
     public float  SpawnTimer;
     public int    SpawnBatchSize;
-    // These let the spawner reset pooled entities to the correct
-    // values without hardcoding anything in the system itself
-    public float  EnemyMaxHealth;
-    public float  EnemyLifetime;
 }
 
 /// <summary>
@@ -128,6 +125,13 @@ public struct LifetimeComponent : IComponentData
     public float SecondsRemaining;
     public float MaxLifetime;       // stored so we can reset on pool reuse
 }
+
+/// <summary>
+/// Added by SpawnerSystem when a pooled enemy is re-enabled.
+/// Consumed immediately by EnemyInitSystem which resets all state.
+/// Think of this as the DOTS equivalent of OnEnabled.
+/// </summary>
+public struct PendingInitTag : IComponentData { }
 
 // ─── Future Extension Placeholders (add these when ready) ──────────────────
 // public struct EnergyConsumerComponent : IComponentData { public float DrainPerSecond; }

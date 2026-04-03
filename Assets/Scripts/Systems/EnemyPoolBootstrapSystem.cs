@@ -8,7 +8,6 @@ public partial struct EnemyPoolBootstrapSystem : ISystem
 {
     public void OnCreate(ref SystemState state)
     {
-        const int POOL_SIZE = 2000;
 
         // Create the singleton pool entity
         var poolEntity = state.EntityManager.CreateEntity();

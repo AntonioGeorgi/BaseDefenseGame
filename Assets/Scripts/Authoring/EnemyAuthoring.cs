@@ -4,47 +4,40 @@ using UnityEngine;
 
 public class EnemyAuthoring : MonoBehaviour
 {
-    [Header("Health")]
-    public float MaxHealth = 50f;
-
-    [Header("Movement")]
-    public float MoveSpeed = 3.5f;
-
-    [Header("Melee Attack")]
-    [Tooltip("Damage dealt per second to buildings and turrets")]
-    public float DamagePerSecond = 10f;
-    [Tooltip("How close the enemy must be to start dealing damage")]
-    public float MeleeRange = 2.5f;
-
-    [Header("Lifetime")]
-    [Tooltip("Seconds before enemy is auto-returned to pool (test feature)")]
-    public float Lifetime = 8f;
+    [Tooltip("Drag a EnemyDataSO asset here")]
+    public EnemyDataSO Data;
 
     class Baker : Baker<EnemyAuthoring>
     {
         public override void Bake(EnemyAuthoring authoring)
         {
+            if (authoring.Data == null)
+            {
+                Debug.LogError($"EnemyAuthoring on '{authoring.name}' has no Data assigned!");
+                return;
+            }
+
             var entity = GetEntity(TransformUsageFlags.Dynamic);
             AddComponent(entity, new EnemyTag());
             AddComponent(entity, new HealthComponent
             {
-                Current = authoring.MaxHealth,
-                Max     = authoring.MaxHealth
+                Current = authoring.Data.MaxHealth,
+                Max     = authoring.Data.MaxHealth
             });
             AddComponent(entity, new MovementSpeedComponent
             {
-                Value = authoring.MoveSpeed
+                Value = authoring.Data.MoveSpeed
             });
-            AddComponent(entity, new MoveTargetComponent());
             AddComponent(entity, new MeleeDamageComponent
             {
-                DamagePerSecond = authoring.DamagePerSecond,
-                MeleeRange      = authoring.MeleeRange
+                DamagePerSecond = authoring.Data.DamagePerSecond,
+                MeleeRange      = authoring.Data.MeleeRange
             });
+            AddComponent(entity, new MoveTargetComponent());
             AddComponent(entity, new LifetimeComponent
             {
-                SecondsRemaining = authoring.Lifetime,
-                MaxLifetime      = authoring.Lifetime
+                SecondsRemaining = authoring.Data.Lifetime,
+                MaxLifetime      = authoring.Data.Lifetime
             });
         }
     }

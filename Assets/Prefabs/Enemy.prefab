@@ -129,9 +129,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5d1ea92f72b8b16488c16ba4b3bf3773, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemyAuthoring
-  MaxHealth: 50
-  MoveSpeed: 3.5
-  Lifetime: 10
+  Data: {fileID: 11400000, guid: ab4dc392efecabf41b75f81955ce908e, type: 2}
 --- !u!54 &1494915801055661867
 Rigidbody:
   m_ObjectHideFlags: 0

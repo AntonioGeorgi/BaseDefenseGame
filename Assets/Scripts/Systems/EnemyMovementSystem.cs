@@ -1,9 +1,8 @@
 // EnemyMovementSystem.cs
-// Moves all enemies toward their MoveTargetComponent. Burst-compiled, runs as a parallel job.
 using Unity.Burst;
 using Unity.Entities;
 using Unity.Mathematics;
-using Unity.Physics;       // <── needed for PhysicsVelocity
+using Unity.Physics;
 using Unity.Transforms;
 
 [BurstCompile]
@@ -31,39 +30,35 @@ public partial struct EnemyMovementSystem : ISystem
         public float DeltaTime;
 
         private void Execute(
-            ref PhysicsVelocity  velocity,    // ← SET this, don't set transform directly
-            ref LocalTransform   transform,
+            ref PhysicsVelocity     velocity,
+            ref LocalTransform      transform,
             in  MoveTargetComponent moveTarget,
             in  MovementSpeedComponent speed,
+            in  MeleeDamageComponent melee,   // stop distance = attack range
             in  EnemyTag _)
         {
-            float3 toTarget  = moveTarget.Value - transform.Position;
-            toTarget.y       = 0f;            // stay on the ground plane
-            float  dist      = math.length(toTarget);
+            float3 toTarget = moveTarget.Value - transform.Position;
+            toTarget.y      = 0f;
+            float dist      = math.length(toTarget);
 
-            if (dist < 1.5f)
+            // Stop at melee range — same value that EnemyMeleeDamageSystem uses
+            if (dist < melee.MeleeRange)
             {
-                // Close enough — stop moving, start attacking
                 velocity.Linear  = float3.zero;
                 velocity.Angular = float3.zero;
                 return;
             }
 
-            float3 direction = toTarget / dist; // normalize
-
-            // Set velocity — physics engine moves the entity AND resolves
-            // collisions with other enemies so they spread out
-            velocity.Linear = new float3(
+            float3 direction = toTarget / dist;
+            velocity.Linear  = new float3(
                 direction.x * speed.Value,
-                0f,                           // Y locked by Rigidbody constraints
-                direction.z * speed.Value
-            );
-
-            // Kill any spin the physics engine might add
+                0f,
+                direction.z * speed.Value);
             velocity.Angular = float3.zero;
 
-            // Face direction of travel
-            transform.Rotation = quaternion.LookRotationSafe(direction, math.up());
+            // Floating point epsilon — not a game constant
+            if (dist > 0.001f)
+                transform.Rotation = quaternion.LookRotationSafe(direction, math.up());
         }
     }
 }

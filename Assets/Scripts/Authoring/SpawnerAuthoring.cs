@@ -4,17 +4,12 @@ using UnityEngine;
 
 public class SpawnerAuthoring : MonoBehaviour
 {
+    [Tooltip("Must have EnemyAuthoring with a Data asset assigned")]
     public GameObject EnemyPrefab;
 
     [Header("Spawn Timing")]
     public float SpawnRate  = 2f;
     public int   BatchSize  = 3;
-
-    [Header("Enemy Stats — must match EnemyAuthoring on the prefab")]
-    [Tooltip("Used to reset health when reusing a pooled enemy")]
-    public float EnemyMaxHealth = 50f;
-    [Tooltip("Used to reset lifetime when reusing a pooled enemy")]
-    public float EnemyLifetime  = 8f;
 
     class Baker : Baker<SpawnerAuthoring>
     {
@@ -22,7 +17,7 @@ public class SpawnerAuthoring : MonoBehaviour
         {
             if (authoring.EnemyPrefab == null)
             {
-                Debug.LogWarning("SpawnerAuthoring: EnemyPrefab not assigned!");
+                Debug.LogError($"SpawnerAuthoring on '{authoring.name}' has no EnemyPrefab assigned!");
                 return;
             }
 
@@ -32,9 +27,7 @@ public class SpawnerAuthoring : MonoBehaviour
                 EnemyPrefab    = GetEntity(authoring.EnemyPrefab, TransformUsageFlags.Dynamic),
                 SpawnRate      = authoring.SpawnRate,
                 SpawnTimer     = 0f,
-                SpawnBatchSize = authoring.BatchSize,
-                EnemyMaxHealth = authoring.EnemyMaxHealth,
-                EnemyLifetime  = authoring.EnemyLifetime
+                SpawnBatchSize = authoring.BatchSize
             });
         }
     }

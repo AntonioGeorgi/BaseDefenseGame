@@ -34,6 +34,12 @@ public partial struct SpawnerSystem : ISystem
             if (!_commandBuildingFound) return;
         }
 
+        // ── Read enemy stats directly off the prefab entity ───────────────
+        // Prefab entities have all their baked components and are accessible
+        // via ComponentLookup even though they don't appear in normal queries
+        var healthLookup   = SystemAPI.GetComponentLookup<HealthComponent>(isReadOnly: true);
+        var lifetimeLookup = SystemAPI.GetComponentLookup<LifetimeComponent>(isReadOnly: true);
+
         bool hasPool = SystemAPI.HasSingleton<EnemyPoolComponent>();
         EnemyPoolComponent pool = default;
         if (hasPool) pool = SystemAPI.GetSingleton<EnemyPoolComponent>();
@@ -48,7 +54,24 @@ public partial struct SpawnerSystem : ISystem
             spawner.ValueRW.SpawnTimer -= dt;
             if (spawner.ValueRO.SpawnTimer > 0f) continue;
 
+            // Guard against zero/negative spawn rate — division safety only
             spawner.ValueRW.SpawnTimer = 1f / math.max(spawner.ValueRO.SpawnRate, 0.01f);
+
+            // Read the authoritative stats from the prefab's baked components.
+            // This is the single source of truth — no duplication anywhere.
+            if (!healthLookup.TryGetComponent(spawner.ValueRO.EnemyPrefab, out var prefabHealth))
+            {
+                Debug.LogError("[SpawnerSystem] EnemyPrefab has no HealthComponent baked. " +
+                               "Check EnemyAuthoring has a Data asset assigned.");
+                continue;
+            }
+
+            if (!lifetimeLookup.TryGetComponent(spawner.ValueRO.EnemyPrefab, out var prefabLifetime))
+            {
+                Debug.LogError("[SpawnerSystem] EnemyPrefab has no LifetimeComponent baked. " +
+                               "Check EnemyAuthoring has a Data asset assigned.");
+                continue;
+            }
 
             for (int i = 0; i < spawner.ValueRO.SpawnBatchSize; i++)
             {
@@ -56,50 +79,29 @@ public partial struct SpawnerSystem : ISystem
                     rng.NextFloat(-3f, 3f), 0f, rng.NextFloat(-3f, 3f));
 
                 Entity enemy;
-                bool   fromPool = false;
 
                 if (hasPool && pool.Available.Count > 0 &&
                     pool.Available.TryDequeue(out enemy))
                 {
-                    fromPool = true;
-
-                    // ── ORDER MATTERS: position and stats BEFORE enable ───
-                    // The entity is still Disabled (invisible) while these
-                    // writes happen. RemoveComponent<Disabled> is last,
-                    // so the entity pops into existence already correct.
+                    // Spawner only decides WHERE the enemy appears
                     ecb.SetComponent(enemy, LocalTransform.FromPosition(spawnPos));
-                    ecb.SetComponent(enemy, new MoveTargetComponent
-                    {
-                        Value = _commandBuildingPos
-                    });
-                    ecb.SetComponent(enemy, new HealthComponent
-                    {
-                        Current = spawner.ValueRO.EnemyMaxHealth,
-                        Max     = spawner.ValueRO.EnemyMaxHealth
-                    });
-                    ecb.SetComponent(enemy, new LifetimeComponent
-                    {
-                        SecondsRemaining = spawner.ValueRO.EnemyLifetime,
-                        MaxLifetime      = spawner.ValueRO.EnemyLifetime
-                    });
 
-                    // Enable last — entity is now visible at the correct spot
+                    // Signal that this entity needs its state reset
+                    ecb.AddComponent<PendingInitTag>(enemy);
+
+                    // Enable — EnemyInitSystem runs this frame and resets everything
                     ecb.RemoveComponent<PooledTag>(enemy);
                     ecb.RemoveComponent<Disabled>(enemy);
-
-                    Debug.Log($"[Pool] Reused pooled enemy. " +
-                              $"Remaining in pool: {pool.Available.Count}");
                 }
                 else
                 {
-                    // Pool empty — create a fresh entity from the prefab
+                    // Fresh entity — baked values are already correct, just set position
                     enemy = ecb.Instantiate(spawner.ValueRO.EnemyPrefab);
                     ecb.SetComponent(enemy, LocalTransform.FromPosition(spawnPos));
                     ecb.SetComponent(enemy, new MoveTargetComponent
                     {
                         Value = _commandBuildingPos
                     });
-                    Debug.Log("[Pool] Pool empty — created new enemy entity.");
                 }
             }
         }

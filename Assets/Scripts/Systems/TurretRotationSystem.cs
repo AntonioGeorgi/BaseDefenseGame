@@ -1,5 +1,3 @@
-// TurretRotationSystem.cs
-// Rotates the turret mount (Y-axis only) to face the target found by TargetingSystem.
 using Unity.Burst;
 using Unity.Collections;
 using Unity.Entities;
@@ -8,7 +6,7 @@ using Unity.Transforms;
 
 [BurstCompile]
 [UpdateInGroup(typeof(SimulationSystemGroup))]
-[UpdateAfter(typeof(TargetingSystem))] // MUST run after targeting writes TargetComponent
+[UpdateAfter(typeof(TargetingSystem))]
 public partial struct TurretRotationSystem : ISystem
 {
     [BurstCompile]
@@ -20,19 +18,14 @@ public partial struct TurretRotationSystem : ISystem
     [BurstCompile]
     public void OnUpdate(ref SystemState state)
     {
-        float dt = SystemAPI.Time.DeltaTime;
-        const float rotationSpeed = 120f; // degrees per second
-
-        // Mounts don't hold TargetComponent directly — they read it from their BaseEntity
-        var targetLookup    = SystemAPI.GetComponentLookup<TargetComponent>(isReadOnly: true);
-        var transformLookup = SystemAPI.GetComponentLookup<LocalTransform>(isReadOnly: true);
+        var targetLookup = SystemAPI.GetComponentLookup<TargetComponent>(isReadOnly: true);
+        var weaponLookup = SystemAPI.GetComponentLookup<TurretWeaponComponent>(isReadOnly: true);
 
         new MountRotationJob
         {
-            DeltaTime       = dt,
-            RotationSpeed   = math.radians(rotationSpeed),
-            TargetLookup    = targetLookup,
-            TransformLookup = transformLookup
+            DeltaTime    = SystemAPI.Time.DeltaTime,
+            TargetLookup = targetLookup,
+            WeaponLookup = weaponLookup
         }.ScheduleParallel();
     }
 
@@ -40,35 +33,34 @@ public partial struct TurretRotationSystem : ISystem
     private partial struct MountRotationJob : IJobEntity
     {
         public float DeltaTime;
-        public float RotationSpeed;
 
-        [ReadOnly] public ComponentLookup<TargetComponent>   TargetLookup;
-        [ReadOnly] public ComponentLookup<LocalTransform>    TransformLookup;
+        [ReadOnly] public ComponentLookup<TargetComponent>      TargetLookup;
+        [ReadOnly] public ComponentLookup<TurretWeaponComponent> WeaponLookup;
 
         private void Execute(
-            ref LocalTransform mountTransform,
+            ref LocalTransform      mountTransform,
             in  TurretPartComponent turretPart,
             in  TurretMountTag _)
         {
-            // Look up the target from the base entity
             if (!TargetLookup.TryGetComponent(turretPart.BaseEntity, out var target)) return;
             if (!target.HasTarget) return;
 
-            // Get mount world position to compute look direction
-            float3 mountPos  = mountTransform.Position;
-            float3 toTarget  = target.LastKnownPosition - mountPos;
-            toTarget.y       = 0f; // Y-axis rotation only — no barrel tilt here
+            if (!WeaponLookup.TryGetComponent(turretPart.BaseEntity, out var weapon)) return;
 
+            float3 toTarget = target.LastKnownPosition - mountTransform.Position;
+            toTarget.y      = 0f;
+
+            // Floating point epsilon guard — not a game constant
             if (math.lengthsq(toTarget) < 0.001f) return;
 
-            quaternion desiredRot = quaternion.LookRotationSafe(math.normalize(toTarget), math.up());
+            quaternion desiredRot = quaternion.LookRotationSafe(
+                math.normalize(toTarget), math.up());
 
-            // Slerp for smooth rotation
+            // MountRotationSpeed comes from the weapon component, set in TurretAuthoring
             mountTransform.Rotation = math.slerp(
                 mountTransform.Rotation,
                 desiredRot,
-                math.saturate(RotationSpeed * DeltaTime)
-            );
+                math.saturate(math.radians(weapon.MountRotationSpeed) * DeltaTime));
         }
     }
 }
