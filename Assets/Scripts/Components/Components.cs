@@ -75,8 +75,9 @@ public struct TurretWeaponComponent : IComponentData
 /// </summary>
 public struct TurretPartComponent : IComponentData
 {
-    public Entity BaseEntity;   // the root turret base
-    public Entity MountEntity;  // populated on base; barrel uses this to find mount
+    public Entity BaseEntity;
+    public Entity MountEntity;
+    public Entity FirePointEntity; // world forward of this = bullet direction
 }
 
 // ─── Movement ──────────────────────────────────────────────────────────────
@@ -132,6 +133,35 @@ public struct LifetimeComponent : IComponentData
 /// Think of this as the DOTS equivalent of OnEnabled.
 /// </summary>
 public struct PendingInitTag : IComponentData { }
+
+/// <summary>
+/// Marks this entity as an active projectile.
+/// </summary>
+public struct ProjectileTag : IComponentData { }
+
+/// <summary>
+/// All data a projectile needs to move and deal damage.
+/// Written at spawn time by TurretFireSystem.
+/// </summary>
+public struct ProjectileComponent : IComponentData
+{
+    public float3 Direction;      // normalized, set at spawn
+    public float  Speed;          // world units per second
+    public float  Damage;         // damage on impact
+    public float  MaxRange;       // despawn after traveling this far
+    public float  DistanceTraveled;
+    public float  HitRadius;        // for collision detection, set at spawn or hardcoded in ProjectileMovementSystem
+}
+
+/// <summary>
+/// Replaces FirePointTag. Stores which local axis points out of the barrel.
+/// Set LocalFireAxis to (1,0,0) if barrel was modelled along X in Blender.
+/// Set to (0,0,1) if barrel was modelled along Z (Unity default forward).
+/// </summary>
+public struct FirePointComponent : IComponentData
+{
+    public float3 LocalFireAxis;
+}
 
 // ─── Future Extension Placeholders (add these when ready) ──────────────────
 // public struct EnergyConsumerComponent : IComponentData { public float DrainPerSecond; }

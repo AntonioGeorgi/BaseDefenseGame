@@ -16,4 +16,4 @@ MonoBehaviour:
   MoveSpeed: 3.5
   DamagePerSecond: 10
   MeleeRange: 2.5
-  Lifetime: 8
+  Lifetime: 15
