@@ -629,8 +629,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SpawnerAuthoring
   EnemyPrefab: {fileID: 4525481874838390001, guid: 3442937aa8f4cf749829a07fb8374371, type: 3}
-  SpawnRate: 0.1
-  BatchSize: 1
+  SpawnRate: 4.45
+  BatchSize: 4
 --- !u!33 &8102779952106156914
 MeshFilter:
   m_ObjectHideFlags: 0
