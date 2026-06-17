@@ -1,66 +1,71 @@
 # Project Vision
 
-This project is a performance-first 3D open-field base defense / tower defense game built around modular ECS/DOTS gameplay systems.
+This project is a performance-first 3D open-field base defense game built with Unity DOTS/ECS.
 
-## Core Game Idea
+The player defends a central base or command structure by placing defensive structures and obstacles in an open field. Enemies may arrive as hordes, elite squads, bosses, mixed formations, summoned units, or other future encounter types.
 
-The player defends a central base or command structure against enemy groups. Enemies may arrive as endless hordes, small elite squads, bosses, mixed formations, or other future encounter types. The player places defensive structures and obstacles in an open field to shape combat, delay enemies, and protect the base.
+The game should support many active entities at once, including enemies, structures, projectiles, area effects, summoned units, neutral creatures, terrain objects, and destructible obstacles.
 
-The game should support many diverse entities on screen, including enemies, defensive structures, projectiles, area effects, summoned units, neutral creatures, terrain objects, and destructible obstacles.
+## Primary Goal
 
-## Primary Design Goal
+The main goal is long-term gameplay flexibility without sacrificing runtime performance.
 
-The main goal is long-term extensibility without sacrificing performance.
+New enemies, structures, weapons, projectiles, terrain interactions, and character behaviors should usually be created by composing reusable ECS components and systems, not by building isolated one-off class hierarchies.
 
-New enemies, structures, weapons, projectiles, terrain interactions, or character types should usually be created by composing reusable ECS components and systems, not by writing isolated one-off behavior classes.
+The architecture should make it easy to support things like:
 
-The architecture should make it easy to create entities such as:
-
-- Basic enemies that move toward the command center and attack it.
-- Enemies that change targeting behavior below a health threshold.
-- Enemies that spawn other enemies while moving.
-- Turrets with one or multiple weapon modules.
-- Flamethrowers, bullets, missiles, beams, auras, traps, and other weapon types.
-- Neutral or allied characters that reuse movement, targeting, health, and combat systems.
-- Flying, ground, or burrowing units, if added later.
-- Destructible or generated terrain that can affect movement.
+* Basic enemies that move toward the command center and attack it.
+* Enemies that change targeting behavior below a health threshold.
+* Enemies that spawn other enemies while moving.
+* Turrets with one or multiple weapon modules.
+* Flamethrowers, bullets, missiles, beams, auras, traps, melee attacks, and other weapon types.
+* Neutral or allied entities that reuse movement, targeting, health, and combat systems.
+* Ground, flying, burrowing, or other future movement modes.
+* Destructible, generated, or player-placed terrain that affects movement and combat.
 
 ## Performance Philosophy
 
-Performance is a core priority. The game should favor DOTS/ECS-friendly data-oriented design:
+Performance is a core design constraint.
 
-- Small `IComponentData` structs.
-- Systems operating over explicit component queries.
-- Burst/job-compatible logic where possible.
-- Minimal per-frame virtual dispatch.
-- Minimal inheritance-based runtime behavior.
-- Avoid GameObject-heavy logic for high-count gameplay entities.
-- Avoid large universal systems with many type branches when separate component queries would be cleaner and faster.
+Favor DOTS/ECS-friendly, data-oriented design:
 
-Readability is useful but secondary to performance and architectural correctness. The code may become technically dense if that allows better runtime behavior, better scaling, and stronger modularity.
+* Small `IComponentData` structs.
+* Systems operating over explicit component queries.
+* Burst/job-compatible logic where practical.
+* Minimal per-frame virtual dispatch.
+* Minimal inheritance-based runtime behavior.
+* Minimal GameObject-heavy logic for high-count gameplay entities.
+* Avoid large universal systems with many type branches when component queries can express behavior more clearly.
+
+Readability matters, but it is secondary to performance, scalability, and correct architecture. The code may become technically dense if that enables better runtime behavior and long-term modularity.
 
 ## Development Philosophy
 
-Start with simple implementations behind stable abstractions. It is acceptable to begin with inefficient placeholder algorithms if the data contracts allow later replacement.
+Start simple behind stable data contracts.
+
+Early implementations may be naive if the surrounding architecture allows them to be replaced later.
 
 Examples:
 
-- Start with direct movement, but route movement through destination/path components so real pathfinding can replace it later.
-- Start with brute-force closest-target search, but preserve a targeting interface that can later use spatial partitioning.
-- Start with simple projectile movement, but do not force all attacks to be projectiles.
+* Start with direct movement, but route movement through destination/path components so pathfinding can replace it later.
+* Start with brute-force target search, but keep targeting behind request/result data so spatial partitioning can replace it later.
+* Start with simple projectile movement, but do not design combat as if every attack must be a projectile.
+* Start with basic spawning, but use spawn requests so pooling, limits, ownership, and VFX can be added later.
 
-Current systems may be replaced if needed. The foundation should not be changed without strong reason, but early code is not sacred.
+Current systems may be replaced when the project grows. The foundation should not be changed without a strong reason, but early code is not sacred.
 
 ## Non-Goals
 
-Do not optimize for a fixed list of enemy or turret classes. The game direction is intentionally flexible and may change.
+Do not design around:
 
-Do not assume all attacks are bullets.
+* A fixed list of enemy or turret subclasses.
+* Player-vs-enemy-only combat.
+* Command-center-only enemy behavior.
+* Bullet/projectile-only weapons.
+* Ground-only movement.
+* Static-only obstacles.
+* Two-faction-only gameplay.
+* GameObject-heavy high-count runtime behavior.
+* ScriptableObjects performing large amounts of per-frame gameplay logic.
 
-Do not assume all enemies only attack the command center.
-
-Do not assume only two factions exist.
-
-Do not assume all movement is ground movement.
-
-Do not assume all obstacles are static.
+The game direction is intentionally flexible. Avoid assumptions that make future systems harder to add.
