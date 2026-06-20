@@ -1,5 +1,6 @@
 // EnemyDataSO.cs
 using UnityEngine;
+using Unity.Entities;
 
 [CreateAssetMenu(fileName = "MovingEntityData", menuName = "BaseDefense/MovingEntityData")]
 public class MovingEntityDataSO : ScriptableObject
@@ -35,6 +36,14 @@ public class MovingEntityDataSO : ScriptableObject
         {
             speed = MoveSpeed,
             direction = Vector3.forward
+        };
+    }
+
+    public TargetComponent CreateTargetComponent()
+    {
+        return new TargetComponent
+        {
+            targetEntity = Entity.Null
         };
     }
 
