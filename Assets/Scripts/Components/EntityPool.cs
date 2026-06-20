@@ -9,7 +9,7 @@ using Unity.Entities;
 public struct EnemyPoolComponent : IComponentData
 {
     // NativeQueue is thread-safe for push/pop between systems
-    public NativeQueue<Entity> Available;
+    public NativeQueue<Entity> available;
 }
 
 /// <summary>

@@ -17,6 +17,8 @@ public class EnemyAuthoring : MonoBehaviour
                 return;
             }
 
+            DependsOn(authoring.Data);
+
             var entity = GetEntity(TransformUsageFlags.Dynamic);
             AddComponent(entity, new EnemyTag());
             AddComponent(entity, new HealthComponent
