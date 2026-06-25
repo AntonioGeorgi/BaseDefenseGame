@@ -11,7 +11,6 @@ GameObject:
   - component: {fileID: 6394174263010188855}
   - component: {fileID: 5347368921665839332}
   - component: {fileID: 6883364320579791296}
-  - component: {fileID: 2652332349515702853}
   m_Layer: 0
   m_Name: TurretBarrel
   m_TagString: Untagged
@@ -92,21 +91,6 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!114 &2652332349515702853
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1694184355861396549}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 437b0058181a119418f3d58f2e59199d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::TurretBarrelAuthoring
-  BaseObject: {fileID: 3389171169482098148}
-  MountObject: {fileID: 7538791563304775516}
-  FirePointObject: {fileID: 8376637403149820856}
 --- !u!1 &3389171169482098148
 GameObject:
   m_ObjectHideFlags: 0
@@ -119,7 +103,6 @@ GameObject:
   - component: {fileID: 1674016447928761585}
   - component: {fileID: 3601357708660975608}
   - component: {fileID: 1748676079838199724}
-  - component: {fileID: 5790400198924221017}
   m_Layer: 0
   m_Name: TurretBase
   m_TagString: Untagged
@@ -223,28 +206,6 @@ CapsuleCollider:
   m_Height: 3
   m_Direction: 1
   m_Center: {x: 0, y: 1.5, z: 0}
---- !u!114 &5790400198924221017
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3389171169482098148}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1af877cca0765534c89a1ce6eeadbcff, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::TurretBaseAuthoring
-  MountObject: {fileID: 7538791563304775516}
-  BarrelObject: {fileID: 1694184355861396549}
-  FirePointObject: {fileID: 8376637403149820856}
-  MaxHealth: 200
-  Range: 15
-  FireRate: 1.5
-  Damage: 25
-  ProjectileSpeed: 20
-  MountRotationSpeed: 120
-  ProjectilePrefab: {fileID: 697913910866158148, guid: 4f8aa328b2606e747aa0c1f4ad6de2ec, type: 3}
 --- !u!1 &7538791563304775516
 GameObject:
   m_ObjectHideFlags: 0
@@ -256,7 +217,6 @@ GameObject:
   - component: {fileID: 232688634360444760}
   - component: {fileID: 1407978671875161286}
   - component: {fileID: 4248493489111148448}
-  - component: {fileID: 7162436040761950919}
   m_Layer: 0
   m_Name: TurretMount
   m_TagString: Untagged
@@ -337,19 +297,6 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!114 &7162436040761950919
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7538791563304775516}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 333515e52933b2a44b314c32f650f2df, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::TurretMountAuthoring
-  BaseObject: {fileID: 3389171169482098148}
 --- !u!1 &8376637403149820856
 GameObject:
   m_ObjectHideFlags: 0
@@ -359,7 +306,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7616363110200245660}
-  - component: {fileID: 3832814291386249847}
   m_Layer: 0
   m_Name: FirePoint
   m_TagString: Untagged
@@ -382,17 +328,3 @@ Transform:
   m_Children: []
   m_Father: {fileID: 6394174263010188855}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &3832814291386249847
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8376637403149820856}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9cef7475b05f9d9448fc9d3fe7511d8f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::FirePointAuthoring
-  BaseObject: {fileID: 3389171169482098148}
-  MountObject: {fileID: 7538791563304775516}

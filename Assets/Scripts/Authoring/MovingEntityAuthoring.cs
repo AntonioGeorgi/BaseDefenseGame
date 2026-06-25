@@ -6,7 +6,7 @@ public class MovingEntityAuthoring : MonoBehaviour
 {
     [Tooltip("Drag a MovingEntityDataSO asset here")]
     public MovingEntityDataSO Data;
-
+    public Vector3 TestTargetPosition = new Vector3(5f, 0f, 5f);
     class Baker : Baker<MovingEntityAuthoring>
     {
         public override void Bake(MovingEntityAuthoring authoring)
@@ -24,12 +24,10 @@ public class MovingEntityAuthoring : MonoBehaviour
             AddComponent(entity, authoring.Data.CreateFactionComponent());
             AddComponent(entity, authoring.Data.CreateHealthComponent());
             AddComponent(entity, authoring.Data.CreateMovingComponent());
-            AddComponent(entity, authoring.Data.CreateTargetComponent());
-
-            AddComponent(entity, new LifetimeComponent
+            // AddComponent(entity, authoring.Data.CreateTargetComponent());
+            AddComponent(entity, new TargetComponent
             {
-                SecondsRemaining = authoring.Data.Lifetime,
-                MaxLifetime      = authoring.Data.Lifetime
+                TargetPosition = authoring.TestTargetPosition,
             });
         }
     }

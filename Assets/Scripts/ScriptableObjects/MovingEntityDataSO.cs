@@ -12,7 +12,7 @@ public class MovingEntityDataSO : ScriptableObject
     public float MoveSpeed = 3.5f;
 
     [Header("Faction")]
-    public Faction faction;
+    public Faction faction = Faction.Neutral;
 
     public FactionComponent CreateFactionComponent()
     {
@@ -43,7 +43,7 @@ public class MovingEntityDataSO : ScriptableObject
     {
         return new TargetComponent
         {
-            targetEntity = Entity.Null
+            TargetPosition  = default
         };
     }
 

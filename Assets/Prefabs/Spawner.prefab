@@ -9,7 +9,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6041257939594500275}
-  - component: {fileID: 8239994158156230503}
   m_Layer: 0
   m_Name: Spawner
   m_TagString: Untagged
@@ -32,18 +31,3 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &8239994158156230503
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6063271459148576971}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0ceb8a4f5be7b7f43b60ee07e464f306, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::SpawnerAuthoring
-  EnemyPrefab: {fileID: 4525481874838390001, guid: 3442937aa8f4cf749829a07fb8374371, type: 3}
-  SpawnRate: 2
-  BatchSize: 5

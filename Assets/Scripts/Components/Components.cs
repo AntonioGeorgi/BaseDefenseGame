@@ -69,9 +69,7 @@ public struct TurnComponent : IComponentData
 /// </summary>
 public struct TargetComponent : IComponentData
 {
-    public Entity targetEntity;       // Entity.Null = no target
-    public float3 lastKnownPosition;
-    public bool hasTarget => targetEntity != Entity.Null;
+    public float3 TargetPosition;
 }
 
 /// <summary>

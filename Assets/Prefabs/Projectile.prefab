@@ -12,7 +12,6 @@ GameObject:
   - component: {fileID: 4785339968892174930}
   - component: {fileID: 1966711836495653716}
   - component: {fileID: 4649659336920345688}
-  - component: {fileID: -5535952627167869268}
   m_Layer: 0
   m_Name: Projectile
   m_TagString: Untagged
@@ -113,17 +112,3 @@ SphereCollider:
   serializedVersion: 3
   m_Radius: 0.5
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &-5535952627167869268
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 697913910866158148}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 081909785213dba4fb4f748a800b1a4a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::ProjectileAuthoring
-  Speed: 20
-  MaxRange: 30
