@@ -17,3 +17,16 @@ public struct MovementState : IComponentData
     public float3 DesiredVelocity;
 }
 
+public struct GameBootstrapConfig : IComponentData
+{
+    public Entity MovingActorPrefab;
+    public int ActorCount;
+    public int ActorsPerRow;
+    public float Spacing;
+    public float3 SpawnOrigin;
+    public float3 TargetPosition;
+}
+
+/// <summary>Marks a bootstrap config after its initial actors have been created.</summary>
+public struct GameInitialized : IComponentData { }
+
