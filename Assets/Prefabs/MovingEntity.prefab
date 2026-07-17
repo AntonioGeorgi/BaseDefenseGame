@@ -12,8 +12,6 @@ GameObject:
   - component: {fileID: 3009630484447023807}
   - component: {fileID: 3525075877255522507}
   - component: {fileID: 17263785024546596}
-  - component: {fileID: 7315460393472276829}
-  - component: {fileID: 1494915801055661867}
   m_Layer: 0
   m_Name: MovingEntity
   m_TagString: Untagged
@@ -102,57 +100,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 4525481874838390001}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5d1ea92f72b8b16488c16ba4b3bf3773, type: 3}
+  m_Script: {fileID: 11500000, guid: f5bd38feb58306c4198233062e179781, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MovingEntityAuthoring
-  Data: {fileID: 11400000, guid: 5b97db18548c62949a3fd33c4f52a2fa, type: 2}
---- !u!136 &7315460393472276829
-CapsuleCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4525481874838390001}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Radius: 0.5
-  m_Height: 2
-  m_Direction: 1
-  m_Center: {x: 0, y: 0, z: 0}
---- !u!54 &1494915801055661867
-Rigidbody:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4525481874838390001}
-  serializedVersion: 5
-  m_Mass: 1
-  m_LinearDamping: 0
-  m_AngularDamping: 0.05
-  m_CenterOfMass: {x: 0, y: 0, z: 0}
-  m_InertiaTensor: {x: 1, y: 1, z: 1}
-  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ImplicitCom: 1
-  m_ImplicitTensor: 1
-  m_UseGravity: 0
-  m_IsKinematic: 0
-  m_Interpolate: 0
-  m_Constraints: 84
-  m_CollisionDetection: 0
+  TargetPosition: {x: 5, y: 0, z: 5}
+  MaxSpeed: 3.5
+  TurnSpeed: 180
+  StopDistance: 0.1
