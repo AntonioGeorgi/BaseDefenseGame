@@ -17,4 +17,9 @@ Add an entry here only after an issue is completed and its acceptance criteria h
 
 ## Completed work
 
-No rewrite issues have been verified as complete yet.
+### Issue #11 - Establish the pseudo-2D ground-plane convention
+
+- Completed: 2026-07-18
+- Result: Gameplay movement is projected onto X/Z, preserves each actor's visual Y, and keeps actors upright and facing their flat movement direction. This was verified with a multi-actor Play Mode check and automated Edit Mode regression tests, including nonzero input Y velocities across many actors and frames.
+- Durable decisions: Gameplay directions and distances use X/Z only. Y is presentation height and ordinary movement code must not change it; any future terrain-following behavior that changes Y must be explicit and separate from horizontal movement.
+- Important locations: `Assets/Scripts/Systems/Movement/GroundPlane.cs`, `Assets/Scripts/Systems/Movement/`, and `Assets/Tests/EditMode/GroundPlaneTests.cs`.
