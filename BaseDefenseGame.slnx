@@ -1,4 +1,6 @@
 ﻿<Solution>
-  <Project Path="Assembly-CSharp.csproj" />
+  <Project Path="BaseDefenseGame.Runtime.csproj" />
   <Project Path="Assembly-CSharp-Editor.csproj" />
+  <Project Path="BaseDefenseGame.Tests.EditMode.csproj" />
+  <Project Path="Assembly-CSharp.csproj" />
 </Solution>

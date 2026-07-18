@@ -26,4 +26,13 @@ public static class GroundPlane
         flatPosition.y = position.y;
         return flatPosition;
     }
+
+    /// <summary>
+    /// Advances a position using only X/Z velocity and keeps its presentation height.
+    /// </summary>
+    public static float3 Advance(float3 position, float3 velocity, float deltaTime)
+    {
+        float3 nextPosition = position + Project(velocity) * deltaTime;
+        return PreserveHeight(position, nextPosition);
+    }
 }

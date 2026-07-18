@@ -24,11 +24,12 @@ public partial struct CommitMovementSystem : ISystem
 
         private void Execute(ref LocalTransform transform, in MovementState movementState)
         {
+            transform.Position = GroundPlane.Advance(
+                transform.Position,
+                movementState.Velocity,
+                DeltaTime);
+
             float3 flatVelocity = GroundPlane.Project(movementState.Velocity);
-            float3 nextPosition = transform.Position + flatVelocity * DeltaTime;
-
-            transform.Position = GroundPlane.PreserveHeight(transform.Position, nextPosition);
-
             if (math.lengthsq(flatVelocity) > math.EPSILON)
             {
                 transform.Rotation = quaternion.LookRotationSafe(
