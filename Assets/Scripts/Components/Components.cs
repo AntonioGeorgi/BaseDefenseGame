@@ -17,6 +17,15 @@ public struct MovementState : IComponentData
     public float3 DesiredVelocity;
 }
 
+/// <summary>
+/// The actor's X/Z footprint. Spatial systems use this radius for neighbour
+/// queries, soft avoidance, and hard blocking; it does not perform collision by itself.
+/// </summary>
+public struct PersonalSpace : IComponentData
+{
+    public float Radius;
+}
+
 public struct GameBootstrapConfig : IComponentData
 {
     public Entity MovingActorPrefab;

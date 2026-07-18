@@ -12,6 +12,9 @@ public sealed class MovingActorAuthoring : MonoBehaviour
     [Min(0f)] public float TurnSpeed = 180f;
     [Min(0f)] public float StopDistance = 0.1f;
 
+    [Header("Spatial")]
+    [Min(0f)] public float PersonalSpaceRadius = 0.5f;
+
     private sealed class Baker : Baker<MovingActorAuthoring>
     {
         public override void Bake(MovingActorAuthoring authoring)
@@ -32,6 +35,10 @@ public sealed class MovingActorAuthoring : MonoBehaviour
             {
                 Velocity = float3.zero,
                 DesiredVelocity = float3.zero
+            });
+            AddComponent(entity, new PersonalSpace
+            {
+                Radius = math.max(0f, authoring.PersonalSpaceRadius)
             });
         }
     }
